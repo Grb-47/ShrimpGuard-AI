@@ -76,7 +76,7 @@ Shrimp farmers often lack affordable, continuous, and localized water-quality mo
 | Data/ML | Pandas, NumPy, Scikit-learn (future ML development) |
 | Hardware | ESP32, pH sensor, dissolved oxygen sensor, temperature sensor, salinity sensor, manual ammonia test kit, optional/future turbidity sensor |
 | Connectivity | Bluetooth |
-| Hosting | Cloud server |
+| Hosting | Versal/Hostinger |
 
 ## 8. System Architecture
 
