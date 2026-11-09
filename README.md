@@ -10,7 +10,7 @@ AI-Powered Shrimp Farm Water Quality & Environmental Risk Monitoring System.
 
 ## 1. Project Title
 
-**ShrimpGuard AI** — An AI-powered platform that monitors shrimp farm water quality through ESP32-based sensors, detects environmental risk using expert-validated rules and historical trend analysis, and delivers practical recommendations to farmers in Bengali.
+**ShrimpGuard AI**  An AI-powered platform that monitors shrimp farm water quality through ESP32-based sensors, detects environmental risk using expert-validated rules and historical trend analysis, and delivers practical recommendations to farmers in Bengali.
 
 ## 2. Team Information
 
@@ -162,7 +162,7 @@ Relationship: **User → Farms → Ponds → Devices/Sensors → Historical Read
 Schema: [`database/schema/001_initial_schema.sql`](database/schema/001_initial_schema.sql)
 Design and ER diagram: [`docs/architecture/DATABASE_DESIGN.md`](docs/architecture/DATABASE_DESIGN.md)
 
-## 11. Hardware Components
+## 11. Hardware Component
 
 | Component | Role | Details |
 |---|---|---|
