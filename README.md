@@ -63,7 +63,7 @@ Shrimp farmers often lack affordable, continuous, and localized water-quality mo
 - React dashboard for monitoring and administration
 - Optional/future turbidity sensor support
 
-## 7. Technology Stack
+## 7. Technology part
 
 | Layer | Technologies |
 |---|---|
