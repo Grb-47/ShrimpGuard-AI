@@ -224,6 +224,19 @@ Detailed plan: [`docs/planning/INITIAL_PROJECT_PLAN.md`](docs/planning/INITIAL_P
 
 ---
 
+## 15. Week 03 Documentation
+
+Week 03 defines the software requirements and system diagrams for ShrimpGuard AI.
+
+| Document | Description |
+|---|---|
+| [Software Requirements Specification](docs/srs/CSE4104-7C-T04_SRS.md) | Functional and non-functional requirements, user roles, and detailed use cases |
+| [Use Case Diagram](docs/srs/CSE4104-7C-T04_UseCaseDiagram.md) | Actor and use case overview |
+| [ER Diagram](docs/srs/CSE4104-7C-T04_ERDiagram.md) | Entity relationship diagram from the Week 02 database design |
+| [System Architecture Diagram](docs/srs/CSE4104-7C-T04_ArchitectureDiagram.md) | Week 02 architecture, data flow, and deployment diagrams |
+
+---
+
 ### Academic Context
 
 This repository is the initial foundation for the CSE4104 Week 02 assignment of team **CSE4104-7C-T04**. It is prepared for future GitHub upload but is not yet connected to a remote repository.
