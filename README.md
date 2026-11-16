@@ -27,7 +27,7 @@ AI-Powered Shrimp Farm Water Quality & Environmental Risk Monitoring System.
 
 ## 3. Project Overview
 
-Shrimp farming is highly sensitive to changes in water quality. Unsafe pH, dissolved oxygen, temperature, salinity, or ammonia levels can cause stress, disease, and mass mortality. Many farmers rely on manual testing and delayed expert advice, which makes early intervention difficult.
+Shrimp farming is highly sensitive to changes in water quality. Unsafe pH, dissolved oxygen, temperature, salinity, or ammonia levels can cause stress, disease, and mass mortality. Many farmers rely on manual testing and delayed expert advice, which makes early intervention difficult in situation.
 
 ShrimpGuard AI connects low-cost sensors to an **ESP32**, sends readings over **Bluetooth** to a **Flutter mobile application**, stores them through a **Node.js backend** in **PostgreSQL**, and analyzes risk through a separate **Python FastAPI** service. A **React.js** dashboard supports wider monitoring. **Google Gemini API** converts validated risk results into clear Bengali explanations and recommendations.
 
