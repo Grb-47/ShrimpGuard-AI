@@ -35,7 +35,9 @@ The project is being built as a three-member academic project for CSE4104.
 
 ## 4. Problem Statement
 
-Shrimp farmers often lack affordable, continuous, and localized water-quality monitoring. Manual testing is infrequent, sensor results are difficult to interpret, and expert support may not be available when a pond is deteriorating. Existing tools rarely combine device data, historical trends, validated environmental rules, and farmer-friendly Bengali guidance in one system.
+Shrimp farming is an important part of Bangladesh's aquaculture industry, but maintaining proper water quality remains a major challenge. Parameters such as temperature, pH, dissolved oxygen, ammonia, and salinity directly affect shrimp health, growth, and production. However, many farmers still rely on manual testing and occasional measurements, making it difficult to identify sudden environmental changes and potential risks early.
+Limited access to affordable monitoring technology, difficulties interpreting technical readings, and a lack of timely expert guidance further complicate farm management. Additionally, the absence of an integrated platform for real-time monitoring, historical data analysis, and localized recommendations makes informed decision-making challenging.
+To address these issues, the proposed ShrimpGuard AI System combines ESP32-based IoT sensors, Bluetooth connectivity, PostgreSQL database management, and expert-validated rule-based risk analysis. By integrating the Gemini API, the system will also provide understandable Bengali explanations and actionable recommendations, helping farmers monitor pond conditions and make timely, data-driven decisions.
 
 ## 5. Objectives
 
