@@ -10,10 +10,9 @@
 
 1. Represent **one farmer → many farms → many ponds → many historical readings**.
 2. Keep sensor readings separate from manual test-kit readings.
-3. Preserve the full risk-analysis trail: report → factors → recommendations.
+3. Preserve the full risk-analysis trail: report → factors → explanation and recommendation text.
 4. Support fast historical queries by pond, sensor, parameter, and time.
-5. Keep calibration history for every sensor.
-6. Avoid invented sensor specifications; free-text and metadata fields hold values until confirmed.
+5. Avoid invented sensor specifications; free-text and metadata fields hold values until confirmed.
 
 ## 2. Entity–Relationship Diagram
 
@@ -22,7 +21,6 @@ erDiagram
     USERS ||--o{ FARMS : owns
     USERS ||--o{ NOTIFICATIONS : receives
     USERS ||--o{ MANUAL_TEST_READINGS : records
-    USERS ||--o{ CALIBRATION_RECORDS : performs
 
     FARMS ||--o{ PONDS : contains
     PONDS ||--o{ DEVICES : has
@@ -32,9 +30,7 @@ erDiagram
 
     DEVICES ||--o{ SENSORS : hosts
     SENSORS ||--o{ SENSOR_READINGS : measures
-    SENSORS ||--o{ CALIBRATION_RECORDS : calibrated_by
 
-    RISK_REPORTS ||--o{ RECOMMENDATIONS : includes
     RISK_REPORTS ||--o{ NOTIFICATIONS : triggers
 
     USERS {
@@ -52,12 +48,9 @@ erDiagram
         uuid id PK
         uuid user_id FK
         text name
-        text address
         text location_area
         numeric area
         text area_unit
-        numeric latitude
-        numeric longitude
         timestamptz created_at
         timestamptz updated_at
     }
@@ -81,7 +74,6 @@ erDiagram
         uuid pond_id FK
         text device_serial UK
         text name
-        text firmware_version
         text status
         timestamptz last_seen_at
         timestamptz created_at
@@ -92,9 +84,7 @@ erDiagram
         uuid id PK
         uuid device_id FK
         text sensor_type
-        text model
         text unit
-        text calibration_status
         boolean is_active
         timestamptz created_at
         timestamptz updated_at
@@ -129,21 +119,11 @@ erDiagram
         numeric risk_score
         text summary
         text analysis_engine
-        text gemini_explanation
+        text explanation_bn
+        text recommendations_bn
         text model_version
         jsonb factors
         timestamptz generated_at
-        timestamptz created_at
-    }
-
-    RECOMMENDATIONS {
-        uuid id PK
-        uuid risk_report_id FK
-        text title
-        text description_bn
-        text description_en
-        text priority
-        text category
         timestamptz created_at
     }
 
@@ -157,21 +137,6 @@ erDiagram
         text channel
         boolean is_read
         timestamptz sent_at
-        timestamptz created_at
-    }
-
-    CALIBRATION_RECORDS {
-        uuid id PK
-        uuid sensor_id FK
-        uuid calibrated_by FK
-        text calibration_type
-        text reference_solution
-        numeric before_value
-        numeric after_value
-        numeric temperature
-        text notes
-        timestamptz calibrated_at
-        timestamptz next_due_at
         timestamptz created_at
     }
 ```
@@ -201,11 +166,9 @@ A farm belongs to one user and contains many ponds.
 | `id` | UUID PK | |
 | `user_id` | UUID FK → `users.id` | `ON DELETE CASCADE` |
 | `name` | TEXT | Required |
-| `address` | TEXT | Optional |
 | `location_area` | TEXT | Human-readable locality |
 | `area` | NUMERIC(12,2) | Optional |
 | `area_unit` | TEXT | Unit To Be Confirmed |
-| `latitude`, `longitude` | NUMERIC(9,6) | Optional |
 | `created_at`, `updated_at` | TIMESTAMPTZ | |
 
 ### 3.3 `ponds`
@@ -233,7 +196,6 @@ An ESP32 device is assigned to one pond. A device can host multiple sensors.
 | `pond_id` | UUID FK → `ponds.id` | `ON DELETE CASCADE` |
 | `device_serial` | TEXT | Unique identifier |
 | `name` | TEXT | Friendly name |
-| `firmware_version` | TEXT | Optional |
 | `status` | `device_status` enum | `online`, `offline`, `maintenance`, `unknown` |
 | `last_seen_at` | TIMESTAMPTZ | Optional |
 | `created_at`, `updated_at` | TIMESTAMPTZ | |
@@ -247,9 +209,7 @@ A sensor records one parameter and belongs to a device.
 | `id` | UUID PK | |
 | `device_id` | UUID FK → `devices.id` | `ON DELETE CASCADE` |
 | `sensor_type` | `sensor_type` enum | `ph`, `dissolved_oxygen`, `temperature`, `salinity`, `turbidity` |
-| `model` | TEXT | **To Be Confirmed** |
 | `unit` | TEXT | Unit for the parameter |
-| `calibration_status` | `calibration_status` enum | `uncalibrated`, `calibrated`, `due`, `overdue` |
 | `is_active` | BOOLEAN | Default true |
 | `created_at`, `updated_at` | TIMESTAMPTZ | |
 
@@ -300,27 +260,13 @@ Stores one analysis result per run.
 | `summary` | TEXT | Short structured summary |
 | `factors` | JSONB | Exceeded thresholds, trends, anomalies |
 | `analysis_engine` | TEXT | Example: `rules-v0` |
-| `gemini_explanation` | TEXT | Bengali explanation; nullable |
+| `explanation_bn` | TEXT | Bengali explanation; nullable |
+| `recommendations_bn` | TEXT | Bengali recommendation text; nullable |
 | `model_version` | TEXT | Rules/ML version |
 | `generated_at` | TIMESTAMPTZ | Analysis time |
 | `created_at` | TIMESTAMPTZ | |
 
-### 3.9 `recommendations`
-
-Farmer actions derived from a risk report.
-
-| Column | Type | Notes |
-|---|---|---|
-| `id` | UUID PK | |
-| `risk_report_id` | UUID FK → `risk_reports.id` | `ON DELETE CASCADE` |
-| `title` | TEXT | Required |
-| `description_bn` | TEXT | Bengali recommendation |
-| `description_en` | TEXT | Optional English text |
-| `priority` | `priority_level` enum | `low`, `medium`, `high`, `urgent` |
-| `category` | TEXT | Example: `aeration`, `water_exchange` |
-| `created_at` | TIMESTAMPTZ | |
-
-### 3.10 `notifications`
+### 3.9 `notifications`
 
 User-facing alerts.
 
@@ -337,24 +283,6 @@ User-facing alerts.
 | `sent_at` | TIMESTAMPTZ | Optional |
 | `created_at` | TIMESTAMPTZ | |
 
-### 3.11 `calibration_records`
-
-One row per calibration event.
-
-| Column | Type | Notes |
-|---|---|---|
-| `id` | UUID PK | |
-| `sensor_id` | UUID FK → `sensors.id` | `ON DELETE CASCADE` |
-| `calibrated_by` | UUID FK → `users.id` | Nullable, `ON DELETE SET NULL` |
-| `calibration_type` | TEXT | Example: two-point; exact method TBC |
-| `reference_solution` | TEXT | Exact solutions To Be Confirmed |
-| `before_value`, `after_value` | NUMERIC | Optional |
-| `temperature` | NUMERIC | Optional, for temperature-aware calibration |
-| `notes` | TEXT | Optional |
-| `calibrated_at` | TIMESTAMPTZ | Required |
-| `next_due_at` | TIMESTAMPTZ | Optional |
-| `created_at` | TIMESTAMPTZ | |
-
 ## 4. Relationship Rules
 
 - A user may own zero or many farms.
@@ -365,9 +293,7 @@ One row per calibration event.
 - A reading must belong to exactly one sensor.
 - A manual reading must belong to exactly one pond.
 - A risk report must belong to exactly one pond.
-- A recommendation must belong to exactly one risk report.
 - A notification may reference a pond and/or risk report, or neither.
-- A calibration record must belong to exactly one sensor.
 
 ## 5. Index Strategy
 
@@ -376,12 +302,11 @@ One row per calibration event.
 - Pond-level manual history uses `(pond_id, recorded_at DESC)`.
 - Risk report lookups use `(pond_id, generated_at DESC)`.
 - Notifications use `(user_id, is_read, created_at DESC)`.
-- Calibration lookups use `(sensor_id, calibrated_at DESC)`.
 
 ## 6. Data Retention and Integrity
 
 - Sensor readings are append-only; corrections should be represented by `quality_flag` or new rows, not silent edits.
-- Risk reports and recommendations are retained for historical comparison.
+- Risk reports are retained for historical comparison, including their explanation and recommendation text.
 - `updated_at` columns are maintained by a shared trigger function.
 - Deleting a user cascades to their farms, ponds, devices, sensors, and readings. This is intentional for this academic foundation but should be replaced with soft deletes before production.
 - Units are stored with values to avoid ambiguity. Unit standards are To Be Confirmed.
@@ -398,6 +323,5 @@ One row per calibration event.
 - Final units and acceptable ranges for each parameter
 - Risk score scale and thresholds (expert validation required)
 - Sensor and test-kit models
-- Whether pond geolocation is needed at farm or pond level
 - Retention period for raw readings
 - Role model beyond `farmer` and `admin`

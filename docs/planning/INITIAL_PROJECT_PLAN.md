@@ -16,9 +16,9 @@
 | 3 | Core backend and data model | Farm, pond, device, sensor, reading, and history endpoints | CRUD and reading storage work with authorization |
 | 4 | Device and mobile ingestion | ESP32 firmware, Bluetooth protocol, Flutter device connection and reading submission | A reading can travel from the device to PostgreSQL |
 | 5 | Risk analysis | FastAPI rules, trend analysis, anomaly detection, risk reports | A stored reading produces a stored risk report |
-| 6 | Bengali explanation | Gemini integration grounded in the risk result, recommendation storage | A validated risk report receives Bengali text or a safe fallback |
+| 6 | Bengali explanation | Gemini integration grounded in the risk result, recommendation text stored in the risk report | A validated risk report receives Bengali text or a safe fallback |
 | 7 | Dashboard, notifications, and charts | React views, Flutter history and charts, notification flow | End-to-end monitoring flow is usable by the team |
-| 8 | Testing and deployment | Integration tests, calibration validation, cloud deployment, user documentation | System is demonstrable and documented |
+| 8 | Testing and deployment | Integration tests, hardware validation, cloud deployment, user documentation | System is demonstrable and documented |
 | 9 | Future ML and expansion | Custom ML model, turbidity sensor, offline sync | Planned after the core system is stable |
 
 ## 2. Proposed Task Distribution
@@ -30,12 +30,12 @@ This is a balanced three-person proposal and is subject to change.
 | Coordination, scope, and integration | Shefa Hassan Shefa | All | Team leader; owns milestone tracking and final review |
 | Node.js backend and authentication | Shefa Hassan Shefa | Gourab Mondal | API design, auth, farm/pond/device/reading/report modules |
 | Database design and operations | Gourab Mondal | Shefa Hassan Shefa | Schema, migrations, indexes, backups, query review |
-| ESP32 firmware and sensor integration | Gourab Mondal | Shahreia Alam | Pin map, firmware, Bluetooth payload, calibration support |
+| ESP32 firmware and sensor integration | Gourab Mondal | Shahreia Alam | Pin map, firmware, and Bluetooth payload |
 | Python risk service and future ML | Gourab Mondal | Shefa Hassan Shefa | Rules, trends, anomaly detection, risk scoring, ML path |
 | Flutter farmer application | Shahreia Alam | Shefa Hassan Shefa | Screens, navigation, API client, device flow, Bengali UI |
 | React dashboard | Shahreia Alam | Gourab Mondal | Monitoring views, reports, notifications, admin layout |
 | Bengali content and farmer UX | Shahreia Alam | All | Explanation review, clarity, localization |
-| Hardware testing and calibration | Gourab Mondal | All | Bench tests, reference checks, calibration records |
+| Hardware testing | Gourab Mondal | All | Bench tests and reference checks |
 | Documentation and submission | Shefa Hassan Shefa | All | Architecture, planning, proposal, team info, README review |
 
 **Shared responsibilities:** code review, testing, weekly progress notes, and keeping documentation aligned with implementation.
@@ -61,7 +61,6 @@ This is a balanced three-person proposal and is subject to change.
 3. Notifications for risky conditions.
 4. Charts and trend views.
 5. React dashboard views.
-6. Calibration records and sensor status.
 
 ### P2 — Enhancement and future scope
 
@@ -80,7 +79,7 @@ This is a balanced three-person proposal and is subject to change.
 - `ponds` — create, read, update, delete, farm ownership checks
 - `devices` — registration, assignment to pond, status and last-seen tracking
 - `readings` — sensor ingestion, manual test ingestion, history queries
-- `risk` — call the FastAPI service, persist reports and recommendations
+- `risk` — call the FastAPI service, persist reports with explanation and recommendation text
 - `notifications` — create, list, mark as read
 
 ### Rules
@@ -145,7 +144,6 @@ All feature screens and navigation exist. Most screens are placeholders with a c
 - Do not edit an already-applied migration.
 - Keep sensor readings append-only.
 - Store units with values.
-- Maintain calibration history.
 - Back up the database before destructive changes.
 
 ### Open decisions
@@ -205,13 +203,12 @@ All feature screens and navigation exist. Most screens are placeholders with a c
 4. Confirm the pin map and firmware constants.
 5. Check reading stability with repeated samples.
 
-### Calibration testing
+### Hardware calibration testing
 
 1. Confirm reference solutions/methods for each sensor.
 2. Follow `hardware/calibration/CALIBRATION_GUIDE.md`.
 3. Record before/after values and temperatures.
 4. Verify with an independent reference where possible.
-5. Update `calibration_records` and sensor status.
 
 ### Field testing
 
@@ -250,7 +247,7 @@ Documentation rule: when implementation changes behavior, update the relevant do
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| Sensor models not confirmed | Firmware and calibration blocked | Confirm datasheets and pin map early |
+| Sensor models not confirmed | Firmware and sensor validation blocked | Confirm datasheets and pin map early |
 | Expert thresholds not available | Risk output remains `not_configured` | Schedule expert review; keep thresholds configurable |
 | Flutter/Python not installed on a developer machine | Code cannot be run locally | Install SDKs and document versions |
 | Bluetooth protocol not fixed | Mobile integration blocked | Agree on payload and profile before UI work |

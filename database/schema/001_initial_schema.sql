@@ -5,12 +5,11 @@
 --
 -- Canonical DDL for:
 --   users, farms, ponds, devices, sensors, sensor_readings,
---   manual_test_readings, risk_reports, recommendations,
---   notifications, calibration_records
+--   manual_test_readings, risk_reports, notifications
 --
--- NOTE: Sensor models, units, ranges, and calibration values are
--- intentionally not hard-coded. Unknown specifications are stored
--- as free text until confirmed.
+-- NOTE: Sensor models, units, and ranges are intentionally not
+-- hard-coded. Unknown specifications are stored as free text until
+-- confirmed.
 -- ============================================================
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
@@ -31,18 +30,9 @@ CREATE TYPE sensor_type AS ENUM (
     'turbidity'
 );
 
-CREATE TYPE calibration_status AS ENUM (
-    'uncalibrated',
-    'calibrated',
-    'due',
-    'overdue'
-);
-
 CREATE TYPE reading_quality AS ENUM ('valid', 'suspect', 'invalid');
 
 CREATE TYPE risk_level AS ENUM ('low', 'moderate', 'high', 'critical');
-
-CREATE TYPE priority_level AS ENUM ('low', 'medium', 'high', 'urgent');
 
 CREATE TYPE notification_channel AS ENUM ('in_app', 'push', 'sms');
 
@@ -79,12 +69,9 @@ CREATE TABLE farms (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name            TEXT NOT NULL,
-    address         TEXT,
     location_area   TEXT,
     area            NUMERIC(12, 2) CHECK (area IS NULL OR area >= 0),
     area_unit       TEXT,
-    latitude        NUMERIC(9, 6),
-    longitude       NUMERIC(9, 6),
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -124,7 +111,6 @@ CREATE TABLE devices (
     pond_id           UUID NOT NULL REFERENCES ponds(id) ON DELETE CASCADE,
     device_serial     TEXT NOT NULL UNIQUE,
     name              TEXT,
-    firmware_version  TEXT,
     status            device_status NOT NULL DEFAULT 'unknown',
     last_seen_at      TIMESTAMPTZ,
     created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -143,9 +129,7 @@ CREATE TABLE sensors (
     id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     device_id           UUID NOT NULL REFERENCES devices(id) ON DELETE CASCADE,
     sensor_type         sensor_type NOT NULL,
-    model               TEXT,
     unit                TEXT,
-    calibration_status  calibration_status NOT NULL DEFAULT 'uncalibrated',
     is_active           BOOLEAN NOT NULL DEFAULT TRUE,
     created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -208,7 +192,8 @@ CREATE TABLE risk_reports (
     summary             TEXT,
     factors             JSONB NOT NULL DEFAULT '{}'::jsonb,
     analysis_engine     TEXT NOT NULL DEFAULT 'rules-v0',
-    gemini_explanation  TEXT,
+    explanation_bn      TEXT,
+    recommendations_bn  TEXT,
     model_version       TEXT,
     generated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -219,22 +204,6 @@ CREATE INDEX idx_risk_reports_pond_time
 
 CREATE INDEX idx_risk_reports_level
     ON risk_reports(risk_level);
-
--- ---------- Recommendations ----------
-
-CREATE TABLE recommendations (
-    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    risk_report_id   UUID NOT NULL REFERENCES risk_reports(id) ON DELETE CASCADE,
-    title            TEXT NOT NULL,
-    description_bn   TEXT,
-    description_en   TEXT,
-    priority         priority_level NOT NULL DEFAULT 'medium',
-    category         TEXT,
-    created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX idx_recommendations_report_id
-    ON recommendations(risk_report_id);
 
 -- ---------- Notifications ----------
 
@@ -259,26 +228,3 @@ CREATE INDEX idx_notifications_pond_id
 
 CREATE INDEX idx_notifications_risk_report_id
     ON notifications(risk_report_id);
-
--- ---------- Calibration records ----------
-
-CREATE TABLE calibration_records (
-    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    sensor_id           UUID NOT NULL REFERENCES sensors(id) ON DELETE CASCADE,
-    calibrated_by       UUID REFERENCES users(id) ON DELETE SET NULL,
-    calibration_type    TEXT,
-    reference_solution  TEXT,
-    before_value        NUMERIC(12, 4),
-    after_value         NUMERIC(12, 4),
-    temperature         NUMERIC(8, 3),
-    notes               TEXT,
-    calibrated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    next_due_at         TIMESTAMPTZ,
-    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX idx_calibration_sensor_time
-    ON calibration_records(sensor_id, calibrated_at DESC);
-
-CREATE INDEX idx_calibration_calibrated_by
-    ON calibration_records(calibrated_by);

@@ -38,7 +38,7 @@ This document describes the high-level architecture of ShrimpGuard AI: the hardw
 ```mermaid
 flowchart LR
     Farmer([Farmer])
-    Officer([Farm Owner / Officer])
+    Admin([System Admin])
     Sensors[Water Quality Sensors]
     ESP32[ESP32]
     App[Flutter Farmer App]
@@ -51,7 +51,7 @@ flowchart LR
     Sensors --> ESP32
     ESP32 -- Bluetooth --> App
     Farmer --> App
-    Officer --> Web
+    Admin --> Web
     App --> Node
     Web --> Node
     Node --> DB
@@ -92,7 +92,7 @@ sequenceDiagram
     R->>G: Request Bengali explanation
     G-->>R: Explanation text
     R-->>N: Risk result + explanation
-    N->>P: INSERT risk_reports, recommendations
+    N->>P: INSERT risk_reports
     N-->>F: Risk report and notification
 ```
 
@@ -120,7 +120,7 @@ The Flutter app and React dashboard request history from Node.js. Node.js querie
 - Device registration and status
 - Sensor and manual reading storage
 - Historical data retrieval
-- Risk report and recommendation persistence
+- Risk report persistence, including explanation and recommendation text
 - Notification generation and retrieval
 - API management for Flutter and React clients
 - Controlled calls to the Python risk service
@@ -142,16 +142,14 @@ Gemini receives a **structured result** (risk level, exceeded parameters, trends
 ## 7. Data Model Overview
 
 ```text
-User (farmer)
+User (farmer or system admin)
   └── Farm (many)
         └── Pond (many)
               ├── Device (many)
               │     └── Sensor (many)
-              │           ├── Sensor Reading (many)
-              │           └── Calibration Record (many)
+              │           └── Sensor Reading (many)
               ├── Manual Test Reading (many)
-              ├── Risk Report (many)
-              │     └── Recommendation (many)
+              ├── Risk Report (many; includes explanation_bn and recommendations_bn)
               └── Notification (many, optional per pond)
 ```
 

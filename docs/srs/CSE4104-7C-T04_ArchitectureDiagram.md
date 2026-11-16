@@ -23,7 +23,7 @@ The Mermaid code is reproduced verbatim from the existing Week 02 document. It w
 ```mermaid
 flowchart LR
     Farmer([Farmer])
-    Officer([Farm Owner / Officer])
+    Admin([System Admin])
     Sensors[Water Quality Sensors]
     ESP32[ESP32]
     App[Flutter Farmer App]
@@ -36,7 +36,7 @@ flowchart LR
     Sensors --> ESP32
     ESP32 -- Bluetooth --> App
     Farmer --> App
-    Officer --> Web
+    Admin --> Web
     App --> Node
     Web --> Node
     Node --> DB
@@ -75,7 +75,7 @@ sequenceDiagram
     R->>G: Request Bengali explanation
     G-->>R: Explanation text
     R-->>N: Risk result + explanation
-    N->>P: INSERT risk_reports, recommendations
+    N->>P: INSERT risk_reports
     N-->>F: Risk report and notification
 ```
 
@@ -112,14 +112,14 @@ Deployment specifics (provider, domain, TLS termination, backing up PostgreSQL) 
 ## 5. Brief Explanation
 
 1. **Field layer:** Water-quality sensors measure pH, dissolved oxygen, temperature, and salinity. The ESP32 reads and packages the measurements and exposes them to the Flutter farmer application over Bluetooth.
-2. **Client layer:** The Flutter application is the farmer-facing client. It manages farm and pond context, collects readings, accepts manual ammonia entries, and displays history, risk reports, Bengali explanations, recommendations, and notifications. The React.js dashboard provides monitoring and administration views.
+2. **Client layer:** The Flutter application is the farmer-facing client. It manages farm and pond context, collects readings, accepts manual ammonia entries, and displays history, risk reports, report-embedded Bengali explanations and recommendations, and notifications. The React.js dashboard provides monitoring and administration views.
 3. **Service layer:** The Node.js backend owns authentication, farmer and farm management, pond management, sensor data management, historical retrieval, risk report management, notifications, and API management. The Python FastAPI service owns water-quality analysis, expert-validated rule-based risk classification, historical trend analysis, abnormal pattern detection, and environmental risk assessment.
-4. **Data layer:** PostgreSQL stores users, farms, ponds, devices, sensors, sensor readings, manual test readings, risk reports, recommendations, notifications, and calibration records.
+4. **Data layer:** PostgreSQL stores users, farms, ponds, devices, sensors, sensor readings, manual test readings, risk reports, and notifications. The explanation and recommendation text are stored directly inside each risk report.
 5. **AI boundary:** The Python FastAPI service performs risk classification first. It then sends the validated risk result to the Gemini API for a Bengali explanation and farmer-friendly recommendation text. Gemini does not decide the risk level and cannot override the validated classification. If Gemini is unavailable, the rule-based report is still produced and stored.
 6. **Deployment:** The Node.js API, FastAPI service, PostgreSQL database, and React build are intended for a cloud server. The ESP32 does not call the internet directly in the current architecture; the Flutter application is responsible for uploading readings to the backend.
 
 ## 6. Consistency Note
 
-The copied Week 02 context diagram includes an `Officer / Farm Owner` actor. The confirmed role model for Week 03 is **Shrimp Farmer** and **System Admin**, as supported by the database design and the React dashboard scope. The `Officer / Farm Owner` actor is therefore retained only because this file reproduces the Week 02 diagram verbatim. The team should confirm whether this is a separate role or an earlier label for an existing role. The Week 03 use case diagram uses only Farmer and Admin.
+The Week 02 and Week 03 diagrams use the same role model: **Shrimp Farmer** and **System Admin**. The context diagram therefore shows the administrator as the React dashboard actor, matching the database design and the Week 03 use case diagram.
 
 The architecture diagrams also show the intended Week 02 foundation. They do not imply that every component is fully implemented. The current repository contains service skeletons, placeholder screens, and foundation risk-analysis logic.

@@ -103,7 +103,7 @@ ShrimpGuard AI will:
 8. Retrieve and display historical readings, charts, and trend views.
 9. Request environmental risk analysis for a pond.
 10. Classify environmental risk using expert-validated rules, historical trend analysis, and abnormal pattern detection in the Python FastAPI service.
-11. Store and display risk reports containing the risk level, score, summary, factors, analysis engine, and generation time.
+11. Store and display risk reports containing the risk level, score, summary, factors, analysis engine, generation time, and any Bengali explanation and recommendation text.
 12. Generate Bengali explanations and farmer-friendly recommendation text from validated risk results using the Gemini API.
 13. Display recommendations and in-app notifications for risky conditions.
 14. Provide a React.js dashboard for authenticated monitoring and administration.
@@ -114,7 +114,7 @@ ShrimpGuard AI will:
 ShrimpGuard AI will not:
 
 1. Diagnose shrimp diseases directly from water-quality readings. The system assesses **environmental risk**; it does not provide a medical or veterinary diagnosis.
-2. Replace a qualified aquaculture expert, veterinarian, or extension officer.
+2. Replace a qualified aquaculture expert, veterinarian, or extension specialist.
 3. Control aerators, pumps, feeders, or other pond equipment automatically.
 4. Provide automatic chemical dosing instructions or prescribe exact chemical treatments.
 5. Let Gemini independently determine, change, or override the validated risk classification.
@@ -124,7 +124,7 @@ ShrimpGuard AI will not:
 9. Provide offline-first synchronization as a current requirement. Offline queueing is a future enhancement.
 10. Provide multi-language support beyond Bengali as a current requirement.
 11. Provide financial, marketplace, accounting, or farm-commerce functionality.
-12. Replace manual sensor calibration or guarantee sensor accuracy without proper calibration and maintenance.
+12. Guarantee sensor accuracy without proper sensor maintenance.
 
 ### 1.5.3 Intended Users
 
@@ -133,7 +133,7 @@ ShrimpGuard AI will not:
 | **Shrimp Farmer** | The primary user who owns farms and ponds, connects the ESP32 device, collects readings, enters manual ammonia results, requests risk analysis, and views Bengali explanations, recommendations, and notifications. |
 | **System Admin** | An administrative user supported by the existing `admin` role and React dashboard scope. The admin monitors farms, ponds, devices, readings, risk reports, and notifications through the dashboard. Additional administrative permissions are not assumed unless confirmed by the team. |
 
-No other user role is introduced in this SRS. The `Officer / Farm Owner` label that appears in the Week 02 architecture context diagram is not established as a separate role in the current role model.
+No other user role is introduced in this SRS.
 
 ### 1.5.4 Major System Components
 
@@ -141,11 +141,11 @@ No other user role is introduced in this SRS. The `Officer / Farm Owner` label t
 |---|---|---|
 | Sensor layer | pH, dissolved oxygen, temperature, and salinity sensors | Measure physical and chemical water parameters |
 | Edge controller | ESP32 | Read sensors, package readings, and expose data over Bluetooth |
-| Mobile application | Flutter | Farmer authentication, farm and pond management, Bluetooth connection, reading collection, manual ammonia entry, history, risk reports, recommendations, and notifications |
+| Mobile application | Flutter | Farmer authentication, farm and pond management, Bluetooth connection, reading collection, manual ammonia entry, history, risk reports with Bengali explanation and recommendation text, and notifications |
 | Web dashboard | React.js | Monitoring and administration views for farms, ponds, devices, readings, risk reports, and notifications |
 | Backend API | Node.js | Authentication, farmer and farm management, pond management, sensor data management, historical retrieval, risk report management, notification management, and API management |
 | Risk analysis service | Python, FastAPI | Water-quality analysis, expert-validated rule-based risk classification, historical trend analysis, abnormal pattern detection, and environmental risk assessment |
-| Database | PostgreSQL | Persistent storage for users, farms, ponds, devices, sensors, readings, manual readings, risk reports, recommendations, notifications, and calibration records |
+| Database | PostgreSQL | Persistent storage for users, farms, ponds, devices, sensors, readings, manual readings, risk reports with embedded Bengali explanation and recommendation text, and notifications |
 | Explanation layer | Google Gemini API | Generate Bengali explanations and farmer-friendly recommendation text from validated risk results |
 | Connectivity | Bluetooth | Transfer readings from the ESP32 to the Flutter application |
 | Deployment | Cloud server | Host the Node.js service, FastAPI service, PostgreSQL, and React build |
@@ -207,14 +207,13 @@ The functional requirements below define the confirmed capabilities of ShrimpGua
 | **FR-13** | The Flutter application and React dashboard shall display historical readings as charts or trend views for a selected pond and parameter. | Flutter application; React dashboard | Should | Confirmed |
 | **FR-14** | The Flutter application shall allow a farmer to request environmental risk analysis for a selected pond, and the Node.js service shall forward the pond context and recent readings or history to the Python FastAPI service. | Shrimp Farmer; Flutter application; Node.js service; FastAPI service | Must | Confirmed |
 | **FR-15** | The Python FastAPI service shall evaluate configured expert-validated thresholds and available historical trends and anomalies and return a risk level, risk score, summary, and structured factors; when thresholds are not configured, it shall return a `not_configured` status without presenting a risk level. | Python FastAPI service | Must | Confirmed |
-| **FR-16** | The Node.js service shall store each risk report with its risk level, score, summary, factors, analysis engine, model version, and generation time, and the Flutter application and React dashboard shall display the report. | Node.js service; PostgreSQL; Flutter application; React dashboard | Must | Confirmed |
+| **FR-16** | The Node.js service shall store each risk report with its risk level, score, summary, factors, analysis engine, model version, generation time, and any Bengali explanation and recommendation text, and the Flutter application and React dashboard shall display the report. | Node.js service; PostgreSQL; Flutter application; React dashboard | Must | Confirmed |
 | **FR-17** | The Python FastAPI service shall send the validated risk result to the Gemini API to generate a Bengali explanation and farmer-friendly recommendation text, and shall not allow Gemini to change or override the validated risk level. | Python FastAPI service; Gemini API | Must | Confirmed |
-| **FR-18** | The Flutter application and React dashboard shall display structured recommendations and any available Bengali recommendation text for a risk report, including priority or category where provided. | Flutter application; React dashboard; Node.js service | Should | Confirmed |
+| **FR-18** | The Flutter application and React dashboard shall display the Bengali explanation text and recommendation text stored in a risk report when available. | Flutter application; React dashboard; Node.js service | Should | Confirmed |
 | **FR-19** | The Node.js service shall create an in-app notification for a farmer when a stored risk report meets the configured notification condition. | Node.js service; PostgreSQL | Should | Confirmed |
 | **FR-20** | The Flutter application and React dashboard shall list a user's notifications and allow the user to mark a notification as read. | Shrimp Farmer; System Admin; Flutter application; React dashboard; Node.js service | Should | Confirmed |
 | **FR-21** | The React dashboard shall provide authenticated monitoring views of farms, ponds, devices, readings, risk reports, and notifications. | System Admin; React dashboard; Node.js service | Should | Confirmed |
 | **FR-22** | The Node.js service shall enforce role-based access so that farmers can access only their own farms, ponds, devices, and readings, while administrators can access system-wide monitoring views without granting farmer-data mutation by default. | Node.js service; PostgreSQL | Must | Confirmed |
-| **FR-23** | The Node.js service shall store and retrieve sensor calibration records containing the sensor, calibration type, reference solution, before and after values, temperature, calibration time, and next due time, and shall expose the current sensor calibration status. | Shrimp Farmer (authorized device owner); Node.js service; PostgreSQL | Should | Confirmed — supporting; mobile UI workflow TBC |
 
 ## 2.2 Functional Requirement Notes
 
@@ -222,8 +221,7 @@ The functional requirements below define the confirmed capabilities of ShrimpGua
 2. **FR-11** intentionally separates sensor readings from manual test-kit readings, matching the existing database design.
 3. **FR-15** is owned by the Python FastAPI service. Gemini is not part of the classification decision.
 4. **FR-17** allows Gemini to explain and draft recommendation text, but it does not allow Gemini to introduce new measurements, change the risk level, or prescribe chemical dosing.
-5. **FR-23** is a confirmed data requirement because calibration records exist in the database design. The dedicated Flutter calibration workflow is not yet confirmed as implemented.
-6. Push and SMS notification delivery are not current functional requirements. The `notifications.channel` database field permits future channels, but the current requirement is in-app notification display.
+5. Push and SMS notification delivery are not current functional requirements. The `notifications.channel` database field permits future channels, but the current requirement is in-app notification display.
 
 ---
 
@@ -243,7 +241,7 @@ The functional requirements below define the confirmed capabilities of ShrimpGua
 | **NFR-08** | Maintainability | The system shall keep Flutter, React, Node.js, and FastAPI code in separate service directories, document the API surface, use numbered database migrations, and pass the available lint or build checks for each service. | Repository structure review, migration review, and lint or build execution. |
 | **NFR-09** | Scalability | The database schema and indexes shall support multiple farms, multiple ponds per farm, multiple devices per pond, and growing historical reading volume; historical queries shall use indexed pond, sensor, parameter, and time-range access paths. | Representative query plans and index review with sample data. |
 | **NFR-10** | Compatibility | The Flutter application shall target Android devices supported by the selected Flutter SDK; the React dashboard shall run in current major desktop browsers; the Node.js and FastAPI services shall run on the documented cloud server environment; and PostgreSQL version selection shall be recorded. | Build and smoke tests on target platforms. |
-| **NFR-11** | Traceability and auditability | Each risk report shall retain the analysis engine identifier, model version, structured factors, generation time, and any Gemini explanation so that a report can be traced to the inputs and analysis policy used. Analysis inputs and outputs shall be logged without logging secrets. | Inspection of stored risk-report records and log review. |
+| **NFR-11** | Traceability and auditability | Each risk report shall retain the analysis engine identifier, model version, structured factors, generation time, and any Bengali explanation and recommendation text so that a report can be traced to the inputs and analysis policy used. Analysis inputs and outputs shall be logged without logging secrets. | Inspection of stored risk-report records and log review. |
 
 ## 3.2 Non-Functional Requirement Notes
 
@@ -273,7 +271,6 @@ The functional requirements below define the confirmed capabilities of ShrimpGua
 9. Request environmental risk analysis.
 10. View validated risk reports, Bengali explanations, and recommendations.
 11. View in-app notifications and warnings.
-12. View or record sensor calibration information where the calibration workflow is supported.
 
 **Restrictions:**
 
@@ -297,7 +294,6 @@ The functional requirements below define the confirmed capabilities of ShrimpGua
 1. The current project documentation does not define separate admin workflows for creating, deleting, or suspending farmer accounts. This SRS does not introduce them.
 2. Admin access is limited to monitoring and review unless the team confirms additional permissions.
 3. The exact scope of admin data visibility and any admin mutation rights must be confirmed by the team.
-4. The `Officer / Farm Owner` actor shown in the Week 02 architecture context diagram is not a separate role in this SRS. It should be treated as an unconfirmed label or mapped to an existing role after team review.
 
 ---
 
@@ -319,7 +315,6 @@ The functional requirements below define the confirmed capabilities of ShrimpGua
 | UC-10 | View Bengali Explanation and Recommendations | Shrimp Farmer | FR-17, FR-18 |
 | UC-11 | View Notifications | Shrimp Farmer; System Admin | FR-19, FR-20 |
 | UC-12 | Admin Monitor Dashboard | System Admin | FR-21, FR-22 |
-| UC-13 | Record Sensor Calibration | Shrimp Farmer | FR-23 |
 
 ## 5.2 Detailed Use Cases
 
@@ -428,7 +423,7 @@ The functional requirements below define the confirmed capabilities of ShrimpGua
 2. Flutter application requests the farmer's farms from the Node.js service.
 3. Node.js service returns only farms owned by the authenticated farmer.
 4. Farmer creates a farm or selects an existing farm.
-5. Farmer enters or edits farm details such as name, address, locality, area, and optional coordinates.
+5. Farmer enters or edits farm details such as name, locality, and area.
 6. Flutter application validates the required fields and submits the farm request.
 7. Node.js service verifies ownership and persists the farm.
 8. Farmer opens the selected farm and creates or edits a pond.
@@ -603,11 +598,11 @@ The functional requirements below define the confirmed capabilities of ShrimpGua
 7. FastAPI service classifies the environmental risk and produces a risk level, score, summary, and structured factors.
 8. FastAPI service may request a Bengali explanation from Gemini after classification has been completed.
 9. If Gemini returns text, FastAPI service includes it with the validated result; if not, the result remains valid without an explanation.
-10. Node.js service stores the risk report and any structured recommendations.
+10. Node.js service stores the risk report, including any Bengali explanation and recommendation text.
 11. Flutter application displays the risk level, score, summary, factors, and report generation time.
 
 **Postconditions:**
-1. A risk report is stored in PostgreSQL with the analysis engine, model version, factors, and generation time.
+1. A risk report is stored in PostgreSQL with the analysis engine, model version, factors, generation time, and any Bengali explanation and recommendation text.
 2. The farmer sees the validated environmental risk result.
 3. The risk level is determined by the Python rule-based analysis, not by Gemini.
 
@@ -629,15 +624,15 @@ The functional requirements below define the confirmed capabilities of ShrimpGua
 **Preconditions:**
 1. The farmer is authenticated.
 2. A risk report exists for a pond owned by the farmer.
-3. The report may or may not contain a Gemini-generated Bengali explanation.
+3. The report may or may not contain Bengali explanation and recommendation text.
 
 **Main Flow:**
 1. Farmer opens a stored risk report.
 2. Flutter application requests the report details from the Node.js service.
-3. Node.js service verifies pond ownership and returns the risk level, summary, factors, structured recommendations, and any available Bengali explanation.
+3. Node.js service verifies pond ownership and returns the risk level, summary, factors, and any available Bengali explanation and recommendation text stored in the report.
 4. Flutter application displays the validated risk level and its factors.
-5. Flutter application displays the structured recommendations with priority or category where provided.
-6. If a Bengali explanation exists, Flutter application displays it in simple Bengali.
+5. Flutter application displays the Bengali recommendation text when available.
+6. If Bengali explanation text exists, Flutter application displays it in simple Bengali.
 7. Farmer reads the explanation and recommendations.
 
 **Postconditions:**
@@ -645,8 +640,8 @@ The functional requirements below define the confirmed capabilities of ShrimpGua
 2. No risk level is changed by the explanation layer.
 
 **Alternative Flow:**
-1. If no Bengali explanation is available, the application displays an explanation-unavailable or pending message and still shows the structured recommendations and validated risk level.
-2. If the report has no recommendations, the application displays the risk result without inventing recommendations.
+1. If no Bengali explanation is available, the application displays an explanation-unavailable or pending message and still shows any recommendation text and the validated risk level.
+2. If the report has no recommendation text, the application displays the risk result without inventing recommendations.
 3. If the farmer is not authorized to view the report, the request is denied.
 4. If the report cannot be retrieved, the client displays a controlled error.
 
@@ -715,38 +710,6 @@ The functional requirements below define the confirmed capabilities of ShrimpGua
 
 ---
 
-### UC-13: Record Sensor Calibration
-
-**Use Case ID:** UC-13
-**Use Case Name:** Record Sensor Calibration
-**Primary Actor:** Shrimp Farmer
-**Preconditions:**
-1. The farmer is authenticated and authorized to maintain the sensor.
-2. The sensor is registered and associated with a device and pond.
-3. A calibration procedure has been performed according to the project calibration guidance.
-
-**Main Flow:**
-1. Farmer selects the sensor and opens the calibration record form.
-2. Farmer enters the calibration type, reference solution, before value, after value, temperature, optional notes, calibration time, and optional next due time.
-3. Client validates that the sensor is selected and that numeric fields are valid.
-4. Client submits the calibration record to the Node.js service.
-5. Node.js service verifies authorization and stores the calibration record in PostgreSQL.
-6. Node.js service updates the sensor calibration status.
-7. Client displays the saved calibration record and current calibration status.
-
-**Postconditions:**
-1. A calibration record is stored for the sensor.
-2. The sensor calibration status reflects the recorded calibration.
-3. The calibration history remains available for later review.
-
-**Alternative Flow:**
-1. If required fields are missing or invalid, the client displays a validation message and does not submit the record.
-2. If the sensor does not exist or is not accessible to the user, the Node.js service denies the request.
-3. If the database write fails, the client displays a controlled error and does not claim that calibration was recorded.
-4. The dedicated Flutter calibration screen is not confirmed as implemented; the use case defines the intended behavior for a later implementation increment.
-
----
-
 # Appendix A: Requirements Traceability Matrix
 
 | Functional Requirement | Use Case(s) | Traceability Note |
@@ -768,12 +731,11 @@ The functional requirements below define the confirmed capabilities of ShrimpGua
 | FR-15 | UC-09 | Rule-based classification is performed by FastAPI. |
 | FR-16 | UC-09 | The risk report is stored and displayed. |
 | FR-17 | UC-09, UC-10 | Gemini explanation is generated after classification and viewed with the report. |
-| FR-18 | UC-10 | Recommendations are displayed with the report. |
+| FR-18 | UC-10 | Bengali explanation and recommendation text stored in the report are displayed. |
 | FR-19 | UC-09, UC-11 | A risk report may trigger an in-app notification. |
 | FR-20 | UC-11 | Notifications are listed and marked as read. |
 | FR-21 | UC-12 | The React dashboard provides monitoring views. |
 | FR-22 | UC-02, UC-12 | Role-based access applies to authentication and dashboard monitoring. |
-| FR-23 | UC-13 | Calibration records and status are stored and reviewed. |
 
 ---
 
@@ -794,16 +756,15 @@ The following capabilities are confirmed for the core project:
 9. Environmental risk analysis using expert-validated rules, historical trends, and abnormal pattern detection.
 10. Risk report storage and display.
 11. Gemini-generated Bengali explanation and farmer-friendly recommendation text based on validated results.
-12. Structured recommendation display.
+12. Report-embedded Bengali explanation and recommendation text display.
 13. In-app notifications and notification viewing.
 14. React dashboard monitoring.
 15. Role-based access for farmers and administrators.
 
 ## B.2 Supporting Scope
 
-1. Sensor calibration records and calibration status are supported by the database design and hardware documentation. The dedicated mobile calibration workflow requires team confirmation.
-2. The database supports notification channels for future push and SMS delivery, but current requirements cover in-app notifications only.
-3. The database sensor type enumeration includes turbidity for future use, but turbidity is not a current sensor-reading requirement.
+1. The database supports notification channels for future push and SMS delivery, but current requirements cover in-app notifications only.
+2. The database sensor type enumeration includes turbidity for future use, but turbidity is not a current sensor-reading requirement.
 
 ## B.3 Future Scope
 
@@ -814,9 +775,9 @@ The following items are planned or possible future work and are **not** current 
 3. Offline-first mobile operation with background synchronization.
 4. Push or SMS alert delivery.
 5. Multi-language support beyond Bengali.
-6. Veterinary or extension-officer collaboration workflows.
+6. Veterinary or extension-specialist collaboration workflows.
 7. Farm-level analytics and benchmarking.
-8. Automated calibration reminders and device health monitoring.
+8. Automated device health monitoring.
 9. Cloud observability and advanced audit trails.
 
 ---
@@ -835,9 +796,7 @@ The following items are planned or possible future work and are **not** current 
 ## C.2 Open Items Requiring Team Confirmation
 
 1. **Week 01 reference:** No Week 01 documentation or PDF is present in the workspace. The team should confirm whether a Week 01 document exists and whether it introduces any requirement not captured here.
-2. **Officer role:** The Week 02 architecture context diagram includes an `Officer / Farm Owner` actor. The confirmed role model in the database and proposal is farmer and admin. The team should confirm whether a third role is intended.
-3. **Admin permissions:** The team should confirm the exact scope of admin monitoring, data visibility, and whether admins may modify any records.
-4. **Calibration workflow:** The team should confirm whether the Week 03 implementation scope includes a farmer-facing calibration screen or only the calibration data model.
-5. **Notification condition:** The exact risk level or threshold that triggers an in-app notification is not yet defined and requires team or expert confirmation.
-6. **Expert thresholds:** Final acceptable ranges and the risk-scoring policy require expert validation. Until then, the FastAPI service returns `not_configured` when thresholds are unavailable.
-7. **Implementation status:** The team should update this SRS when core requirements move from specification to implemented functionality.
+2. **Admin permissions:** The team should confirm the exact scope of admin monitoring, data visibility, and whether admins may modify any records.
+3. **Notification condition:** The exact risk level or threshold that triggers an in-app notification is not yet defined and requires team or expert confirmation.
+4. **Expert thresholds:** Final acceptable ranges and the risk-scoring policy require expert validation. Until then, the FastAPI service returns `not_configured` when thresholds are unavailable.
+5. **Implementation status:** The team should update this SRS when core requirements move from specification to implemented functionality.

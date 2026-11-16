@@ -67,7 +67,7 @@ ShrimpGuard AI addresses these problems by combining low-cost sensors, an ESP32 
 - Device and sensor registration
 - Sensor reading and manual reading storage
 - Historical data retrieval
-- Risk report and recommendation management
+- Risk report management with embedded explanation and recommendation text
 - Notification management
 - API layer for mobile and web clients
 
@@ -101,7 +101,7 @@ ShrimpGuard AI addresses these problems by combining low-cost sensors, an ESP32 
 - Salinity sensor
 - Manual ammonia test kit
 - Optional/future turbidity sensor
-- Calibration records and sensor documentation
+- Sensor documentation
 
 ## 5. Technology Stack
 
@@ -126,10 +126,10 @@ At the end of the project, the team expects to deliver:
 
 1. A working ESP32-based water-quality monitoring device that can read the confirmed sensors and send readings to the mobile application over Bluetooth.
 2. A Flutter farmer application that supports farm and pond management, water testing, manual ammonia entry, history, charts, and Bengali recommendations.
-3. A Node.js backend connected to PostgreSQL that securely stores users, farms, ponds, devices, readings, risk reports, recommendations, and notifications.
+3. A Node.js backend connected to PostgreSQL that securely stores users, farms, ponds, devices, readings, risk reports with embedded recommendation text, and notifications.
 4. A Python FastAPI risk service that applies expert-validated rules and historical analysis, with a clear path for future machine learning.
 5. A Gemini-powered Bengali explanation layer that is grounded in validated risk results.
 6. A React.js dashboard for monitoring and administration.
-7. Complete documentation for architecture, database design, hardware, calibration, and project planning.
+7. Complete documentation for architecture, database design, hardware, and project planning.
 
 The expected impact is earlier risk detection, better record keeping, more accessible guidance for farmers, and a maintainable technical foundation for future expansion.

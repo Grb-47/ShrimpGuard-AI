@@ -26,7 +26,6 @@ erDiagram
     USERS ||--o{ FARMS : owns
     USERS ||--o{ NOTIFICATIONS : receives
     USERS ||--o{ MANUAL_TEST_READINGS : records
-    USERS ||--o{ CALIBRATION_RECORDS : performs
 
     FARMS ||--o{ PONDS : contains
     PONDS ||--o{ DEVICES : has
@@ -36,9 +35,7 @@ erDiagram
 
     DEVICES ||--o{ SENSORS : hosts
     SENSORS ||--o{ SENSOR_READINGS : measures
-    SENSORS ||--o{ CALIBRATION_RECORDS : calibrated_by
 
-    RISK_REPORTS ||--o{ RECOMMENDATIONS : includes
     RISK_REPORTS ||--o{ NOTIFICATIONS : triggers
 
     USERS {
@@ -56,12 +53,9 @@ erDiagram
         uuid id PK
         uuid user_id FK
         text name
-        text address
         text location_area
         numeric area
         text area_unit
-        numeric latitude
-        numeric longitude
         timestamptz created_at
         timestamptz updated_at
     }
@@ -85,7 +79,6 @@ erDiagram
         uuid pond_id FK
         text device_serial UK
         text name
-        text firmware_version
         text status
         timestamptz last_seen_at
         timestamptz created_at
@@ -96,9 +89,7 @@ erDiagram
         uuid id PK
         uuid device_id FK
         text sensor_type
-        text model
         text unit
-        text calibration_status
         boolean is_active
         timestamptz created_at
         timestamptz updated_at
@@ -133,21 +124,11 @@ erDiagram
         numeric risk_score
         text summary
         text analysis_engine
-        text gemini_explanation
+        text explanation_bn
+        text recommendations_bn
         text model_version
         jsonb factors
         timestamptz generated_at
-        timestamptz created_at
-    }
-
-    RECOMMENDATIONS {
-        uuid id PK
-        uuid risk_report_id FK
-        text title
-        text description_bn
-        text description_en
-        text priority
-        text category
         timestamptz created_at
     }
 
@@ -163,21 +144,6 @@ erDiagram
         timestamptz sent_at
         timestamptz created_at
     }
-
-    CALIBRATION_RECORDS {
-        uuid id PK
-        uuid sensor_id FK
-        uuid calibrated_by FK
-        text calibration_type
-        text reference_solution
-        numeric before_value
-        numeric after_value
-        numeric temperature
-        text notes
-        timestamptz calibrated_at
-        timestamptz next_due_at
-        timestamptz created_at
-    }
 ```
 
 ## 3. Brief Explanation
@@ -188,8 +154,7 @@ The diagram models the core data relationships of ShrimpGuard AI:
 2. **Farm and pond hierarchy:** A farm contains many `PONDS`. The pond is the main unit of environmental monitoring.
 3. **Device and sensor hierarchy:** A pond may have many `DEVICES`, and each ESP32 device may host many `SENSORS`. Each sensor produces many `SENSOR_READINGS`.
 4. **Manual readings:** `MANUAL_TEST_READINGS` are linked directly to a pond and a recording user. They are intentionally separate from automatic sensor readings so that manual ammonia results remain distinguishable.
-5. **Risk analysis trail:** Each pond may produce many `RISK_REPORTS`. A risk report contains the validated risk level, score, summary, analysis engine, model version, structured factors, and optional Gemini explanation.
-6. **Recommendations and notifications:** A risk report may include many `RECOMMENDATIONS` and may trigger many `NOTIFICATIONS`. Notifications are also linked to a user and may reference a pond or risk report.
-7. **Calibration history:** `CALIBRATION_RECORDS` preserve the calibration history for each sensor and record the user who performed the calibration.
+5. **Risk analysis trail:** Each pond may produce many `RISK_REPORTS`. A risk report contains the validated risk level, score, summary, analysis engine, model version, structured factors, and the Bengali explanation and recommendation text stored directly in `explanation_bn` and `recommendations_bn`.
+6. **Notifications:** A risk report may trigger many `NOTIFICATIONS`. Notifications are also linked to a user and may reference a pond or risk report.
 
-The diagram is consistent with the established AI boundary: the risk report stores the rule-based analysis metadata and, separately, the optional Gemini explanation. The explanation is not the source of the risk classification.
+The diagram is consistent with the established AI boundary: the risk report stores the rule-based analysis metadata together with the optional Bengali explanation and recommendation text. The explanation is not the source of the risk classification.
