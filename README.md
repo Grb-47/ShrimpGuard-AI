@@ -46,6 +46,7 @@ Shrimp farmers often lack affordable, continuous, and localized water-quality mo
 5. Generate Bengali explanations and actionable recommendations using Gemini API, grounded in the risk analysis results.
 6. Provide farmers with dashboards, charts, history, and notifications.
 7. Build a foundation that can later support a custom machine-learning model.
+8. Enable farmers to make informed decisions through real-time monitoring, early risk detection, and data-driven farm management.
 
 ## 6. Core Features
 
