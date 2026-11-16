@@ -212,15 +212,19 @@ Detailed plan: [`docs/planning/INITIAL_PROJECT_PLAN.md`](docs/planning/INITIAL_P
 
 ## 14. Future Scope
 
-- Trained custom ML models for risk prediction and anomaly detection
-- Turbidity and additional water-quality sensors
-- Offline-first mobile operation with background synchronization
-- SMS or push alerts for critical conditions
-- Multi-language support beyond Bengali
-- Veterinary/extension-officer collaboration workflows
-- Farm-level analytics and benchmarking
-- Automated calibration reminders and device health monitoring
-- Cloud deployment with observability and audit trails
+-The ShrimpGuard AI System has significant opportunities for future enhancement and expansion. Although the initial version focuses on intelligent shrimp farm management, water quality monitoring, and AI-based risk analysis, several additional features can be introduced to improve accuracy, accessibility, automation, and overall system performance.
+
+The potential future developments include:
+Advanced Machine Learning Models: Develop and integrate custom-trained machine learning models for more accurate shrimp disease risk prediction, water quality forecasting, and early anomaly detection using historical and real-time farm data.
+Additional Water Quality Sensors: Integrate advanced sensors, including turbidity sensors and other essential water quality monitoring devices, to collect more comprehensive environmental data and improve monitoring accuracy.
+Offline-First Mobile Application: Introduce offline functionality that allows farmers to access essential features, record farm information, and view previously stored data without an internet connection. The application will automatically synchronize data when connectivity is restored.
+Real-Time Alert and Notification System: Implement SMS and push notification services to immediately inform farmers about critical water quality conditions, potential risks, unusual environmental changes, and important farm management activities.
+Multilingual Support: Expand the system's language capabilities beyond Bengali to support additional languages, making the platform more accessible to shrimp farmers from different linguistic backgrounds and regions.
+Veterinary and Agricultural Expert Collaboration: Introduce dedicated communication and collaboration features that allow farmers to connect with veterinary professionals, aquaculture specialists, and agricultural extension officers for expert guidance and technical assistance.
+Advanced Farm Analytics and Benchmarking: Develop comprehensive analytical dashboards to visualize farm performance, compare historical records, monitor production trends, and benchmark farm-level performance against relevant industry indicators.
+Automated Sensor Calibration and Device Monitoring: Introduce automated calibration reminders, sensor performance tracking, and device health monitoring to identify technical issues, maintain measurement accuracy, and reduce unexpected equipment failures.
+Cloud-Based Deployment and System Observability: Migrate the platform toward scalable cloud infrastructure to improve data accessibility, system availability, and performance. Future versions may also include centralized logging, performance monitoring, error tracking, and audit trails to ensure better system transparency and reliability.
+These future enhancements will help transform ShrimpGuard AI into a more intelligent, scalable, and comprehensive shrimp aquaculture management platform. The long-term vision is to support data-driven farming decisions, reduce operational risks, improve farm productivity, and contribute to the sustainable development of the shrimp aquaculture industry.
 
 ---
 
