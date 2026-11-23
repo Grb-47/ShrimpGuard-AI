@@ -20,18 +20,18 @@
 erDiagram
     USERS ||--o{ FARMS : owns
     USERS ||--o{ NOTIFICATIONS : receives
-    USERS ||--o{ MANUAL_TEST_READINGS : records
+    USERS |o--o{ MANUAL_TEST_READINGS : records
 
     FARMS ||--o{ PONDS : contains
     PONDS ||--o{ DEVICES : has
     PONDS ||--o{ MANUAL_TEST_READINGS : has
     PONDS ||--o{ RISK_REPORTS : produces
-    PONDS ||--o{ NOTIFICATIONS : relates_to
+    PONDS |o--o{ NOTIFICATIONS : relates_to
 
     DEVICES ||--o{ SENSORS : hosts
     SENSORS ||--o{ SENSOR_READINGS : measures
 
-    RISK_REPORTS ||--o{ NOTIFICATIONS : triggers
+    RISK_REPORTS |o--o{ NOTIFICATIONS : triggers
 
     USERS {
         uuid id PK
@@ -294,6 +294,7 @@ User-facing alerts.
 - A manual reading must belong to exactly one pond.
 - A risk report must belong to exactly one pond.
 - A notification may reference a pond and/or risk report, or neither.
+- A manual reading always belongs to a pond; `recorded_by` is optional because `manual_test_readings.recorded_by` is nullable with `ON DELETE SET NULL`.
 
 ## 5. Index Strategy
 

@@ -25,18 +25,18 @@ The Mermaid code below is reproduced verbatim from the existing Week 02 document
 erDiagram
     USERS ||--o{ FARMS : owns
     USERS ||--o{ NOTIFICATIONS : receives
-    USERS ||--o{ MANUAL_TEST_READINGS : records
+    USERS |o--o{ MANUAL_TEST_READINGS : records
 
     FARMS ||--o{ PONDS : contains
     PONDS ||--o{ DEVICES : has
     PONDS ||--o{ MANUAL_TEST_READINGS : has
     PONDS ||--o{ RISK_REPORTS : produces
-    PONDS ||--o{ NOTIFICATIONS : relates_to
+    PONDS |o--o{ NOTIFICATIONS : relates_to
 
     DEVICES ||--o{ SENSORS : hosts
     SENSORS ||--o{ SENSOR_READINGS : measures
 
-    RISK_REPORTS ||--o{ NOTIFICATIONS : triggers
+    RISK_REPORTS |o--o{ NOTIFICATIONS : triggers
 
     USERS {
         uuid id PK
@@ -156,5 +156,6 @@ The diagram models the core data relationships of ShrimpGuard AI:
 4. **Manual readings:** `MANUAL_TEST_READINGS` are linked directly to a pond and a recording user. They are intentionally separate from automatic sensor readings so that manual ammonia results remain distinguishable.
 5. **Risk analysis trail:** Each pond may produce many `RISK_REPORTS`. A risk report contains the validated risk level, score, summary, analysis engine, model version, structured factors, and the Bengali explanation and recommendation text stored directly in `explanation_bn` and `recommendations_bn`.
 6. **Notifications:** A risk report may trigger many `NOTIFICATIONS`. Notifications are also linked to a user and may reference a pond or risk report.
+7. **Optional foreign keys:** `manual_test_readings.recorded_by`, `notifications.pond_id`, and `notifications.risk_report_id` are nullable in `001_initial_schema.sql`. The corresponding relationships use Mermaid's zero-or-one marker (`|o`) on the parent side.
 
 The diagram is consistent with the established AI boundary: the risk report stores the rule-based analysis metadata together with the optional Bengali explanation and recommendation text. The explanation is not the source of the risk classification.
