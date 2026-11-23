@@ -120,6 +120,6 @@ Deployment specifics (provider, domain, TLS termination, backing up PostgreSQL) 
 
 ## 6. Consistency Note
 
-The Week 02 and Week 03 diagrams use the same role model: **Shrimp Farmer** and **System Admin**. The context diagram therefore shows the administrator as the React dashboard actor, matching the database design and the Week 03 use case diagram.
+The Week 02 and Week 03 diagrams use the same role model: **Shrimp Farmer** and **System Admin**. The context diagram of shrimpGurdAI therefore shows the administrator as the React dashboard actor, matching the database design and the Week 03 use case diagram.
 
 The architecture diagrams also show the intended Week 02 foundation. They do not imply that every component is fully implemented. The current repository contains service skeletons, placeholder screens, and foundation risk-analysis logic.
