@@ -47,6 +47,8 @@ flowchart LR
     Farmer --- UC11
 
     Admin --- UC02
+    Admin --- UC08
+    Admin --- UC11
     Admin --- UC12
 
     UC06 -.->|include| UC05
@@ -59,7 +61,7 @@ flowchart LR
 1. **Actors:** The diagram defines two actors supported by the established project scope: the **Shrimp Farmer** and the **System Admin**. No additional role is introduced.
 2. **System boundary:** All use cases are placed inside the **ShrimpGuard AI System** boundary. The ESP32, sensors, Node.js backend, Python FastAPI service, PostgreSQL, Gemini API, and React dashboard are internal or supporting system components rather than separate human actors.
 3. **Farmer use cases:** The farmer registers and logs in, manages the farmer profile, manages farms and ponds, registers a device and connects the ESP32, collects and views sensor readings, enters manual ammonia results, views historical readings and charts, requests environmental risk analysis, views Bengali explanations and recommendations, and views notifications.
-4. **Admin use cases:** The administrator logs in and accesses the React monitoring dashboard. The admin role is limited to the dashboard monitoring and administration scope supported by the existing project documentation.
+4. **Admin use cases:** The administrator logs in, accesses the React monitoring dashboard, views historical readings and charts (UC-08), and views notifications (UC-11). These associations match the primary actors named for UC-08 and UC-11 in the SRS. Admin access remains limited to monitoring and review; no additional data-mutation workflows are introduced by this diagram.
 5. **`include` relationship:** UC-06 *(Collect and View Sensor Readings)* includes UC-05 *(Register Device and Connect ESP32)* because a valid Bluetooth connection and device context are required before a reading can be collected and accepted.
 6. **`extend` relationships:** UC-10 *(View Bengali Explanation and Recommendations)* extends UC-09 *(Request Environmental Risk Analysis)* because the explanation and recommendation text stored in the risk report may be unavailable if Gemini is unavailable. UC-11 *(View Notifications)* is shown as an optional extension because a risk report may produce a notification that the farmer can later view.
 7. **Authentication:** UC-02 *(Login)* is required before the authenticated farmer and administrator use cases are available. It is not drawn as an `include` from every use case in order to keep the diagram readable.
@@ -84,5 +86,6 @@ flowchart LR
 
 ## 4. Notes and Open Items
 
-1. The `admin` role is present in the database design, and the React dashboard is described as a monitoring and administration interface. The exact admin permissions remain **To Be Confirmed**.
+1. The `admin` role is present in the database design, and the React dashboard is described as a monitoring and administration interface. UC-08 and UC-11 are now associated with both actors in accordance with the SRS. The exact scope of admin data visibility and any admin mutation rights remain **To Be Confirmed**.
 2. UC-10 reads the `explanation_bn` and `recommendations_bn` text stored directly in the risk report.
+3. The Week 04 API design exposes admin monitoring through read-only (`GET`) endpoints. SRS FR-20/UC-11 also mention marking a notification as read; that mutation is not represented as an admin API and requires team confirmation.
