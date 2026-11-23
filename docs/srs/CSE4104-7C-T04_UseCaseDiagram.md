@@ -11,7 +11,7 @@
 
 ## 1. Use Case Diagram
 
-> Mermaid.js does not provide a native UML use-case diagram type. The diagram below uses Mermaid flowchart syntax to represent actors, the system boundary, use cases, and UML-style `include` and `extend` relationships.
+> Mermaid.js does not provide a native UML use-case diagram type. The diagram below uses Mermaid flowchart syntax to represent actors, the system boundary, use cases and UML-style `include` and `extend` relationships.
 
 ```mermaid
 flowchart LR
@@ -84,7 +84,7 @@ flowchart LR
 | UC-11 View Notifications | FR-19, FR-20 |
 | UC-12 Admin Monitor Dashboard | FR-21, FR-22 |
 
-## 4. Notes and Open Items
+## 4. Notes and Open Items for shrimpGurd AI
 
 1. The `admin` role is present in the database design, and the React dashboard is described as a monitoring and administration interface. UC-08 and UC-11 are now associated with both actors in accordance with the SRS. The exact scope of admin data visibility and any admin mutation rights remain **To Be Confirmed**.
 2. UC-10 reads the `explanation_bn` and `recommendations_bn` text stored directly in the risk report.
