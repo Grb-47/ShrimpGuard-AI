@@ -241,6 +241,25 @@ Week 03 defines the software requirements and system diagrams for ShrimpGuard AI
 
 ---
 
+## 16. Week 04 — System Design & Software Architecture
+
+Week 04 defines the system design deliverables. All APIs and workflows below are **planned**; current services are foundation skeletons.
+
+| Document | Description |
+|---|---|
+| [Combined System Design](docs/system-design/CSE4104-7C-T04_SystemDesign.md) | Self-contained master document for PDF export (`CSE4104-7C-T04_SystemDesign.pdf`) |
+| [Activity Diagram](docs/system-design/CSE4104-7C-T04_ActivityDiagram.md) | UML activity diagram for sensor reading collection and environmental risk analysis |
+| [API Design](docs/system-design/CSE4104-7C-T04_APIDesign.md) | Planned public `/api/v1/` endpoints and internal FastAPI service boundary |
+| [AI Workflow](docs/system-design/CSE4104-7C-T04_AIWorkflow.md) | Rule-first risk classification, Gemini Bengali text layer, and fallback handling |
+
+Reviewed diagrams reused/updated for Week 04:
+
+- [System Architecture Diagram](docs/srs/CSE4104-7C-T04_ArchitectureDiagram.md) — reviewed, reused without changes.
+- [ER Diagram](docs/srs/CSE4104-7C-T04_ERDiagram.md) — optional FK notation aligned with the SQL schema.
+- [Updated Use Case Diagram](docs/srs/CSE4104-7C-T04_UseCaseDiagram.md) — added System Admin associations for UC-08 and UC-11.
+
+---
+
 ### Academic Context
 
 This repository is the initial foundation for the CSE4104 Week 02 assignment of team **CSE4104-7C-T04**. It is prepared for future GitHub upload but is not yet connected to a remote repository.
