@@ -67,7 +67,7 @@ flowchart LR
 7. **Authentication:** UC-02 *(Login)* is required before the authenticated farmer and administrator use cases are available. It is not drawn as an `include` from every use case in order to keep the diagram readable.
 8. **AI boundary:** Risk classification is an internal step of UC-09 and is performed by the Python FastAPI service. Gemini only generates Bengali explanation and recommendation text after the validated risk result exists. Gemini is not an actor and does not control the risk level.
 
-## 3. Traceability to Functional Requirements
+## 3. Traceability to Functional Requirements are given below:
 
 | Use Case | Related Functional Requirements |
 |---|---|
