@@ -4,7 +4,7 @@
 **Assignment:** Week 03
 **Official Team Name:** CSE4104-7C-T04
 **Section:** 7C
-**Project Title:** ShrimpGuard AI — AI-Powered Shrimp Farm Water Quality & Environmental Risk Monitoring System
+**Project Title:** ShrimpGuard AI  AI Powered Shrimp Farm Water Quality & Environmental Risk Monitoring System
 
 ---
 
